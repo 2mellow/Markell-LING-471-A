@@ -20,9 +20,11 @@ and mistakes is a list of integers.
 def computeAccuracy(predictions, gold_labels):
     # The assert statement will notify you if the condition does not hold.
     assert len(predictions) == len(gold_labels)
-    accuracy = None
-    mistakes = []  # Consider keeping a record of the indices of the errors.
-    return (accuracy, mistakes)
+    correct = sum(1 for x, y in zip(predictions, gold_labels) if x == y)
+
+    accuracy = correct / len(predictions)
+    #mistakes = []  # Consider keeping a record of the indices of the errors.
+    return accuracy
 
 
 '''
@@ -50,14 +52,14 @@ def computePrecisionRecall(predictions, gold_labels, relevant_class):
     else:
         opposite_class = "POSITIVE"
     #true positive
-
+    true_positives = sum(1 for x,y in zip(predictions, gold_labels) if x == y and relevant_class)
     #true negative
-
+    true_negative = sum(1 for x, y in zip(predictions, gold_labels) if x == y and y == opposite_class)
     #false positive
-
+    false_positive = sun(1 for x, y in zip(predictions, gold_labels) if x != y and x == relevant_class)
     #false negative
+    false_negative = sun(1 for x, y in zip(predictions, gold_labels) if x != y and y == relevant_class)
+    precision = true_positives / (true_positives + false_positives)
+    recall = true_positives / (true_positives + false_negative)
 
-    precision = None
-    recall = None
-
-    return None
+    return precision, recall
