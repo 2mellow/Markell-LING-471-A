@@ -118,10 +118,13 @@ NEG = 'bad'
 
 
 def predictSimplistic(filename):
+    # for filename in list:  # This line is causing the error, it should be removed.
+    clean_text = cleanFileContents(filename)
+    token_with_counts = countTokens(clean_text)
     # This line retrieves the count for "good". If the word "good" is not found in "counts", it returns 0.
-    pos_count = counts.get(POS, 0)
+    pos_count = token_with_counts.get(POS, 0)
     # TODO: Write a similar statement below to retrieve the count of "bad".
-    neg_count = neg_count = counts.get(NEG, 0)
+    neg_count = token_with_counts.get(NEG, 0)
 
     # TODO: Write an if-elif-else block here, following the logic described in the function description.
     # Do not forget to return the prediction! You will be returning one of the constants declared above.
@@ -130,13 +133,14 @@ def predictSimplistic(filename):
 
     # TODO: You will modify the below return statement or move it into your if-else block when you write it.
 
+    prediction = None
     if pos_count > neg_count:
         prediction = POS_REVIEW
     elif pos_count < neg_count:
         prediction = NEG_REVIEW
     else:
         prediction = NONE
-        return clean_text, prediction
+    return clean_text, prediction
 
 
 
@@ -164,39 +168,37 @@ def main(argv):
     text_list = []
 
     for file in positive_list:
-        predictSimplistic(file)
-        text = predictSimplistic(file)[0]
-        prediction = predictSimplistic(file)[1]
+        prediction = predictSimplistic(file)
+        text = prediction[0]
+        prediction = prediction[1]
         truth = POS_REVIEW
         text_list.append(truth)
         prediction_list.append(prediction)
         text_list.append(text)
 
     for file in negative_list:
-        predictSimplistic(file)
-        text = predictSimplistic(file)[0]
-        prediction = predictSimplistic(file)[1]
+        prediction = predictSimplistic(file)
+        text = prediction[0]
+        prediction = prediction[1]
         truth = NEG_REVIEW
         text_list.append(truth)
         prediction_list.append(prediction)
         text_list.append(text)
 
-        accuracy = computeAccuracy(prediction_list, truth_list)
-        precision_pos = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
-        recall_pos = computeRecall(prediction_list, truth_list, POS_REVIEW)[1]
-        precision_neg = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
-        recall_neg = computePrecisionRecall(prediction_list, truth_list, NEG_REVIEW)[1]
+    accuracy = computeAccuracy(prediction_list, truth_list)
+    precision_pos = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
+    recall_pos = computeRecall(prediction_list, truth_list, POS_REVIEW)[1]
+    precision_neg = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
+    recall_neg = computePrecisionRecall(prediction_list, truth_list, NEG_REVIEW)[1]
 
-        incorrect_pos = []
-        incorrect_neg = []
+    incorrect_pos = []
+    incorrect_neg = []
 
-        for i in range(len(prediction_list)):
-            if prediction_list[i] != truth_list[i] and truth_list[i] == POS_REVIEW:
-                incorrect_pos.append(text_list[i])
-            elif prediction_list[i] != truth_list[i] and truth_list[i] == NEG_REVIEW:
-                incorrect_neg.append(text_list[i])
-
-            return incorrect_pos, incorrect_neg
+    for i in range(len(prediction_list)):
+        if prediction_list[i] != truth_list[i] and truth_list[i] == POS_REVIEW:
+            incorrect_pos.append(text_list[i])
+        elif prediction_list[i] != truth_list[i] and truth_list[i] == NEG_REVIEW:
+            incorrect_neg.append(text_list[i])
 
     # Now, we will call a function called cleanFileContents on the filename we were passed.
     # NB: We could have called the function directly on argv[1]; that would have the same effect.
