@@ -24,7 +24,7 @@ import string
 
 from pathlib import Path
 from review_vector import reviewVec
-from evaluate import computeAccuracy, computePrecisionRecall
+from evaluation import computeAccuracy, computePrecisionRecall
 
 def cleanFileContents(f):
     # The two lines below open the file and read all the text from it
@@ -155,7 +155,7 @@ def main(argv):
     # The file that you will read should be passed as the argument to the program.
     # From python's point of view, it is the element number 1 in the array called argv.
     # argv is a special variable name. We don't define it ourselves; python knows about it.
-    filename = argv[1]  # Place the first breakpoint here, when starting.
+    filename = argv[1]
 
     positive_dir = Path(argv[1])
     negative_dir = Path(argv[2])
@@ -165,40 +165,29 @@ def main(argv):
 
     truth_list = []
     prediction_list = []
-    text_list = []
 
     for file in positive_list:
         prediction = predictSimplistic(file)
-        text = prediction[0]
-        prediction = prediction[1]
-        truth = POS_REVIEW
-        text_list.append(truth)
-        prediction_list.append(prediction)
-        text_list.append(text)
+        truth_list.append(POS_REVIEW)  # Add the true label for positive reviews
+        prediction_list.append(prediction[1])
 
     for file in negative_list:
         prediction = predictSimplistic(file)
-        text = prediction[0]
-        prediction = prediction[1]
-        truth = NEG_REVIEW
-        text_list.append(truth)
-        prediction_list.append(prediction)
-        text_list.append(text)
+        truth_list.append(NEG_REVIEW)  # Add the true label for negative reviews
+        prediction_list.append(prediction[1])
 
     accuracy = computeAccuracy(prediction_list, truth_list)
-    precision_pos = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
-    recall_pos = computeRecall(prediction_list, truth_list, POS_REVIEW)[1]
-    precision_neg = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)[0]
-    recall_neg = computePrecisionRecall(prediction_list, truth_list, NEG_REVIEW)[1]
+    precision_pos, recall_pos = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)
+    precision_neg, recall_neg = computePrecisionRecall(prediction_list, truth_list, NEG_REVIEW)
 
     incorrect_pos = []
     incorrect_neg = []
 
     for i in range(len(prediction_list)):
         if prediction_list[i] != truth_list[i] and truth_list[i] == POS_REVIEW:
-            incorrect_pos.append(text_list[i])
+            incorrect_pos.append(truth_list[i])
         elif prediction_list[i] != truth_list[i] and truth_list[i] == NEG_REVIEW:
-            incorrect_neg.append(text_list[i])
+            incorrect_neg.append(truth_list[i])
 
     # Now, we will call a function called cleanFileContents on the filename we were passed.
     # NB: We could have called the function directly on argv[1]; that would have the same effect.
