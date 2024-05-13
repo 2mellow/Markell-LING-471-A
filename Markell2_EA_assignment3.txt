@@ -1,0 +1,31 @@
+### Error Analysis
+
+#### Incorrectly Classified Reviews:
+**Positives Classified as Negatives:**
+1. aclImdb\train\pos\10009_9.txt - "Its too bad that most people will avoid..."
+2. aclImdb\train\pos\10013_7.txt - "I dont think it was bad editing or needed another director..."
+3. aclImdb\train\pos\10040_10.txt - "...dialogue which is memorable but in a bad way as in how cheesy..."
+4. aclImdb\train\pos\10045_10.txt - "...this movie wasn't THAT bad or else people wouldn't..."
+5. aclImdb\train\pos\10048_10.txt - "...look cool when you badmouth..."
+
+**Negatives Classified as Positives:**
+1. aclImdb\train\neg\11674_2.txt - "they weren't good at memorizing lines"
+2. aclImdb\train\neg\11674_2.txt - "If you want to see a good early sound film check out Alfred..."
+3. aclImdb\train\neg\11678_4.txt - "...More like The Hot Rock instead and even that was good for a few laughs..."
+4. aclImdb\train\neg\11690_2.txt - "...Mr Spike Lee could have seasoned the movie with some good music score..."
+5. aclImdb\train\neg\11693_4.txt - "...poorly executed. Except for the fairly good makeup..."
+
+#### Observations:
+  - Some positive reviews contain negations or phrases with negative connotations that may confuse the algorithm (e.g., "wasn't THAT bad").
+  - Some negative reviews may contain positive words or phrases (e.g., "fairly good makeup").
+  - Some reviews may contain sarcasm or nuanced language that the algorithm could not interpret correctly.
+
+- **Better Precision than Recall:**
+  - Precision measures the accuracy of positive predictions among all the positive predictions made by the model. 
+  - In this case, the model seems to be more specific in predicting positives (or negatives), resulting in fewer false positives (or negatives) and hence higher precision.
+  - However, this approach may lead to missing some true positives (or negatives), resulting in lower recall.
+
+- **Better Precision for Negative Reviews:**
+  - The precision for negative reviews may be higher because most negative reviews will be more specific and make use of the word "bad".
+  - Negative reviews may contain specific keywords or phrases that are more indicative of negative sentiment.
+  - Positive sentiment, on the other hand, can be expressed in more nuanced and varied ways, making it harder for the algorithm to identify positive reviews accurately.
