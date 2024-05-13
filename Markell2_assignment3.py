@@ -118,13 +118,16 @@ NEG = 'bad'
 
 
 def predictSimplistic(filename):
-    # for filename in list:  # This line is causing the error, it should be removed.
+    # for filename in list:
+    #     clean_text = cleanFileContents(filename)
+    #     token_with_counts = countTokens(clean_text)
     clean_text = cleanFileContents(filename)
-    token_with_counts = countTokens(clean_text)
+    counts = countTokens(clean_text)
     # This line retrieves the count for "good". If the word "good" is not found in "counts", it returns 0.
-    pos_count = token_with_counts.get(POS, 0)
+    pos_count = counts.get(POS, 0)
     # TODO: Write a similar statement below to retrieve the count of "bad".
-    neg_count = token_with_counts.get(NEG, 0)
+    neg_count = counts.get(NEG, 0)
+
 
     # TODO: Write an if-elif-else block here, following the logic described in the function description.
     # Do not forget to return the prediction! You will be returning one of the constants declared above.
@@ -140,6 +143,7 @@ def predictSimplistic(filename):
         prediction = NEG_REVIEW
     else:
         prediction = NONE
+    
     return clean_text, prediction
 
 
@@ -155,8 +159,7 @@ def main(argv):
     # The file that you will read should be passed as the argument to the program.
     # From python's point of view, it is the element number 1 in the array called argv.
     # argv is a special variable name. We don't define it ourselves; python knows about it.
-    filename = argv[1]
-
+   
     positive_dir = Path(argv[1])
     negative_dir = Path(argv[2])
 
@@ -165,48 +168,34 @@ def main(argv):
 
     truth_list = []
     prediction_list = []
-
+    text_list = []
+    # print('Postive files ',len(positive_list))
     for file in positive_list:
-        prediction = predictSimplistic(file)
-        truth_list.append(POS_REVIEW)  # Add the true label for positive reviews
-        prediction_list.append(prediction[1])
+        text,prediction = predictSimplistic(file)
+        truth = POS_REVIEW
+        truth_list.append(truth)
+        prediction_list.append(prediction)
+        text_list.append(text)
 
+    # print('Negative files ',len(negative_list))
     for file in negative_list:
-        prediction = predictSimplistic(file)
-        truth_list.append(NEG_REVIEW)  # Add the true label for negative reviews
-        prediction_list.append(prediction[1])
+        text,prediction = predictSimplistic(file)
+        truth = NEG_REVIEW
+        truth_list.append(truth)
+        prediction_list.append(prediction)
+        text_list.append(text)
 
-    accuracy = computeAccuracy(prediction_list, truth_list)
+    # print("Finidng stats")
+    accuracy,mistakes = computeAccuracy(prediction_list, truth_list)
+    
     precision_pos, recall_pos = computePrecisionRecall(prediction_list, truth_list, POS_REVIEW)
     precision_neg, recall_neg = computePrecisionRecall(prediction_list, truth_list, NEG_REVIEW)
-
-    incorrect_pos = []
-    incorrect_neg = []
-
-    for i in range(len(prediction_list)):
-        if prediction_list[i] != truth_list[i] and truth_list[i] == POS_REVIEW:
-            incorrect_pos.append(truth_list[i])
-        elif prediction_list[i] != truth_list[i] and truth_list[i] == NEG_REVIEW:
-            incorrect_neg.append(truth_list[i])
-
-    # Now, we will call a function called cleanFileContents on the filename we were passed.
-    # NB: We could have called the function directly on argv[1]; that would have the same effect.
-    clean_text = cleanFileContents(filename)
-
-    # Now, we will count how many times each word occurs in the review.
-    # We are passing the text of the review, cleaned from punctuation, to the function called countTokens.
-    # We assign the output of the function to a new variable we call tokens_with_counts.
-    tokens_with_counts = countTokens(clean_text)
-
-    # Call the simplistic prediction function on the obtained counts.
-    # Store the output of the function in a new variable called "prediction".
-    prediction = predictSimplistic(tokens_with_counts)
-
-    # Finally, let's print out what we predicted. Note how we are calling the format()
-    # function on the string we are printing out, and we are passing it two
-    # arguments: the file name and our prediction. This is a convenient way of
-    # printing out results. We will keep using it in the future.
-    print(f"The prediction for file {filename} is {prediction}")
+    
+    print(round(accuracy,4))
+    print(round(precision_pos,4))
+    print(round(recall_pos,4))
+    print(round(precision_neg,4))
+    print(round(recall_neg,4))
 
 
 # The code below is needed so that this file can be used as a module,
