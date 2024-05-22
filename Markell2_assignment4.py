@@ -48,10 +48,10 @@ def main(argv):
     # X_test: the test data; y_test: the test data labels.
     # Access the data frames by the appropriate column names.
     # Hint: df['column name']
-    # X_train =
-    # y_train =
-    # X_test =
-    # y_test =
+    X_train = train_data['review']
+    y_train = train_data['label']
+    X_test = test_data['review']
+    y_test = test_data['label']
     
 
     # The next three lines are performing feature extraction and word counting. 
@@ -64,28 +64,40 @@ def main(argv):
     tf_idf_train = tf_idf_vect.fit_transform(X_train.values)
     tf_idf_test = tf_idf_vect.transform(X_test.values)
 
+    ### Because choosing the right words can increase the accuracy of preditions.
+    ### It'll exclude language that doesn't matter and better than doing == [Word, In, List]
+
     # TODO COMMENT: The hyperparameter alpha is used for Laplace Smoothing.
     # Add a brief comment, trying to explain, in your own words, what smoothing is for.
     # You may want to read about Laplace smoothing here: https://towardsdatascience.com/laplace-smoothing-in-na%C3%AFve-bayes-algorithm-9c237a8bdece
     clf = MultinomialNB(alpha=ALPHA)
+
+    ### Laplace Smoothing is used in probability
+    ### when there are zero probabilities and used to improve the accuracy of models.
+
     # TODO COMMENT: Add a comment explaining in your own words what the "fit()" method is doing.
     clf.fit(tf_idf_train, y_train)
+
+    ### The fit() function takes in two parameters and allows the program to learn and understand patterns.
 
     # TODO COMMENT: Add a comment explaining in your own words what the "predict()" method is doing in the next two lines.
     y_pred_train = clf.predict(tf_idf_train)
     y_pred_test = clf.predict(tf_idf_test)
+
+    ### clf trains data sets while the predict() function is used to predict outputs.
+    ### tf_idf_test allows the code to predict unseen data using the trained data that was inputted.
 
     # TODO: Compute accuracy, precision, and recall, for both train and test data.
     # Import and call your methods from evaluation.py (or wherever) which you wrote for HW3.
     # Note: If you methods there accept lists, you will probably need to cast your pandas label objects to simple python lists:
     # e.g. list(y_train) -- when passing them to your accuracy and precision and recall functions.
 
-    # accuracy_test =
-    # accuracy_train =
-    # precision_pos_test, recall_pos_test =
-    # precision_neg_test, recall_neg_test =
-    # precision_pos_train, recall_pos_train =
-    # precision_neg_train, recall_neg_train =
+    accuracy_test = computeAccuracy(list(y_test), list(y_pred_test))[0]
+    accuracy_train = computeAccuracy(list(y_train), list(y_pred_train))[0]
+    precision_pos_test, recall_pos_test = computePrecisionRecall(list(y_test), list(y_pred_test), GOOD_REVIEW)
+    precision_neg_test, recall_neg_test = computePrecisionRecall(list(y_test), list(y_pred_test), BAD_REVIEW)
+    precision_pos_train, recall_pos_train = computePrecisionRecall(list(y_train), list(y_pred_train), GOOD_REVIEW)
+    precision_neg_train, recall_neg_train = computePrecisionRecall(list(y_train), list(y_pred_train), BAD_REVIEW)
 
     # Report the metrics via standard output.
     # Please DO NOT modify the format (for grading purposes).
