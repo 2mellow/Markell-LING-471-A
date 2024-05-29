@@ -22,7 +22,7 @@ def largest_counts(data):
     # The below assumes your data has a column of "type", storing whether the review is pos or neg
     # If you did differently, make corresponding changes
     pos_data = data[data['label']=='pos']
-    neg_data = None
+    neg_data = data[data['label'] == 'neg']
 
 
     data_cut = [pos_data, neg_data]
@@ -42,7 +42,7 @@ def largest_counts(data):
             freq_dict = Counter(wordlist)
             # TODO: SORT the count dictionary in the preceding line in a descending order
             #  Google learn how to do this; this has also been covered on the class of 05/21/24
-            freq_dict_sort = None
+            freq_dict_sort = dict(sorted(freq_dict.items(), key=lambda item: item[1], reverse=True))
 
             # Write the most frequent 20 words into a txt file
             if dataindex ==0 and modelindex == 0:

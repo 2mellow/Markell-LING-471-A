@@ -86,6 +86,26 @@ def createDataFrames(argv):
     # Your code goes here... Example of how to get not only a list element but also its index, below:
     # for index, element in enumerate(['a','b','c','d']):
     #    print("{}'s index is {}".format(element,index))
+    for i, f in enumerate(train_pos):
+        if i % 100 == 0:
+            print(f"Processing training positive files; file {i+1} out of {len(train_pos)}")
+        processFileForDF(f, data, POS, 'train')
+
+    for i, f in enumerate(train_neg):
+        if i % 100 == 0:
+            print(f"Processing training negative files; file {i+1} out of {len(train_neg)}")
+        processFileForDF(f, data, NEG, 'train')
+
+    for i, f in enumerate(test_pos):
+        if i % 100 == 0:
+            print(f"Processing testing positive files; file {i+1} out of {len(test_pos)}")
+        processFileForDF(f, data, POS, 'test')
+
+    # Processing the testing negative files
+    for i, f in enumerate(test_neg):
+        if i % 100 == 0:
+            print(f"Processing testing negative files; file {i + 1} out of {len(test_neg)}")
+        processFileForDF(f, data, NEG, 'test')
 
     # Use the below column names if you like:
     column_names = ["file", "label", "type", "review",

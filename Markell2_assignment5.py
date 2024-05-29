@@ -18,11 +18,15 @@ from evaluation import computeAccuracy, computePrecisionRecall
 # TODO: You may need to modify assignment 4 if you just had a main() there.
 # my_naive_bayes() should take three arguments: datafile, the review column, and the label column, and return as output 10 floats (numbers)
 # representing the metrics.
-from assignment4 import my_naive_bayes
+from Markell2_assignment4 import my_naive_bayes
 
-
-def main(argv):
+def main(argv, precision_pos_train=None, recall_pos_train=None, precision_neg_train=None, recall_neg_train=None,
+         precision_pos_test=None, recall_pos_test=None, precision_neg_test=None, recall_neg_test=None):
     # argv[1] is the path to 'my_imdb_expanded.csv'
+    if len(argv) < 2:
+        print("Usage: script.py <my_imdb_expanded.csv>")
+        return
+
     data = pd.read_csv(argv[1], index_col=[0])
     # print(data.head())  # <- Verify the format. Comment this back out once done.
 
@@ -36,7 +40,7 @@ def main(argv):
     # But you can also just use lists, except then you must not make a mistake, which score you are accessing,
     # when you plot graphs.
     nb_original = my_naive_bayes(data, 'review', 'label')
-    nb_cleaned = my_naive_bayes(data, , 'cleaned_review', 'label')
+    nb_cleaned = my_naive_bayes(data, 'cleaned_review', 'label')
     nb_lowercase = my_naive_bayes(data, 'lowercased', 'label')
     nb_no_stop = my_naive_bayes(data, 'no stopwords', 'label')
     nb_lemmatized = my_naive_bayes(data, 'lemmatized', 'label')
@@ -60,12 +64,29 @@ def main(argv):
         train_accuracies.append(model['TRAIN']['accuracy'])
         test_accuracies.append(model['TEST']['accuracy'])
         # TODO: Collect other scores similarly. The precision and recalls, for negative and positive, train and test.
-
+        train_accuracies.append(model['TRAIN']['accuracy'])
+        test_accuracies.append(model['TEST']['accuracy'])
+        precision_pos_train.append(model['TRAIN']['POS']['precision'])
+        recall_pos_train.append(model['TRAIN']['POS']['recall'])
+        precision_neg_train.append(model['TRAIN']['NEG']['precision'])
+        recall_neg_train.append(model['TRAIN']['NEG']['recall'])
+        precision_pos_test.append(model['TEST']['POS']['precision'])
+        recall_pos_test.append(model['TEST']['POS']['recall'])
+        precision_neg_test.append(model['TEST']['NEG']['precision'])
+        recall_neg_test.append(model['TEST']['NEG']['recall'])
     # TODO: Create the plot(s) that you want for the report using matplotlib (plt).
     # Use the below to save pictures as files:
     # plt.savefig('filename.png')
     # If you stored the plot into a variable, the line for saving picture will be
     # plotname.savefig('filename.png')
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_accuracies, label='Train Accuracy')
+    plt.plot(test_accuracies, label='Test Accuracy')
+    plt.xlabel('Model Variants')
+    plt.ylabel('Accuracy')
+    plt.title('Train and Test Accuracies of Different Models')
+    plt.legend()
+    plt.savefig('accuracies.png')
 
 if __name__ == "__main__":
     main(sys.argv)
