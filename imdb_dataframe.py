@@ -13,6 +13,7 @@ import csv
 
 from bs4 import BeautifulSoup
 import nltk
+#nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk import stem
 from nltk.stem import PorterStemmer
@@ -110,8 +111,9 @@ def createDataFrames(argv):
     # Use the below column names if you like:
     column_names = ["file", "label", "type", "review",
                     "cleaned_review", "lowercased", "no stopwords", "lemmatized"]
+
     df = pd.DataFrame(data=data, columns=column_names)
-    df.sort_values(by=['type', 'file'])
+    #df.sort_values(by=['type', 'file'])
     df.to_csv('my_imdb_expanded.csv')
 
 

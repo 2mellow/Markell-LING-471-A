@@ -21,16 +21,16 @@ def largest_counts(data):
     # TODO: Cut up the rows in the dataset according to how you stored things.
     # The below assumes your data has a column of "type", storing whether the review is pos or neg
     # If you did differently, make corresponding changes
-    pos_data = data[data['label']== 1]
-    neg_data = data[data['label'] == 0]
-
+    print(data[(data['type'] == "test")])
+    pos_data = data[(data['type'] == "train") & (data['label'] == 1)]
+    neg_data = data[(data['type'] == "train") & (data['label'] == 0)]
 
     data_cut = [pos_data, neg_data]
     # by value (count) in reverse (descending) order.
     # It is your task to Google and learn how to do this, but we will help of course,
     # if you come to use with questions. This can be daunting at first, but give it time.
     # Spend some (reasonable) time across a few days if necessary, and you will do it!
-    model = ["text", "cleaned_text", "no_stop", "lemmatized"]
+    model = ["review", "cleaned_review", "no stopwords", "lemmatized"]
 
     # Loop over the four portions of data, and loop over each model
     # Create a counting dictionary for each one
