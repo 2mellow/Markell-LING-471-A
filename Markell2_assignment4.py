@@ -24,20 +24,20 @@ BAD_REVIEW = 0
 ALPHA = 1
 
 
-# This function will be reporting errors due to variables which were not assigned any value.
-# Your task is to get it working! You can comment out things which aren't working at first.
-def main(argv):
-
+def my_naive_bayes(datafile:str, review_col:str,label_col:str):
+    
     # Read in the data. NB: You may get an extra Unnamed column with indices; this is OK.
     # If you like, you can get rid of it by passing a second argument to the read_csv(): index_col=[0].
-    data = pd.read_csv(argv[1])
+    data = datafile
   
     
     # TODO: Change as appropriate, if you stored data differently (e.g. if you put train data first).
     # You may also make use of the "type" column here instead! E.g. you could sort data by "type".
     # At any rate, make sure you are grabbing the right data! Double check with temporary print statements,
     # e.g. print(test_data.head()).
-
+    
+    total_count = data.shape[0]
+    
     test_data = data[:25000]  # Assuming the first 25,000 rows are test data.
 
     # Assuming the second 25,000 rows are training data. Double check!
@@ -48,10 +48,10 @@ def main(argv):
     # X_test: the test data; y_test: the test data labels.
     # Access the data frames by the appropriate column names.
     # Hint: df['column name']
-    X_train = train_data['review']
-    y_train = train_data['label']
-    X_test = test_data['review']
-    y_test = test_data['label']
+    X_train = train_data[review_col]
+    y_train = train_data[label_col]
+    X_test = test_data[review_col]
+    y_test = test_data[label_col]
     
     # The next three lines are performing feature extraction and word counting. 
     # They are choosing which words to count frequencies for, basically, to discard some of the noise.
@@ -104,9 +104,47 @@ def main(argv):
     # Compute precision and recall for negative class on train dataset
     precision_neg_train, recall_neg_train = computePrecisionRecall(list(y_pred_train), list(y_train), BAD_REVIEW)
 
-    # Report the metrics via standard output.
-    # Please DO NOT modify the format (for grading purposes).
-    # You may change the variable names of course, if you used different ones above.
+    return {
+        "TRAIN": {
+            'accuracy': accuracy_train,
+            'POS': {
+                'precision': precision_pos_train,
+                'recall': recall_pos_train,
+            },
+            'NEG': {
+                'precision': precision_neg_train,
+                'recall': recall_neg_train,
+            }
+        },
+        "TEST": {
+            'accuracy': accuracy_test,
+            'POS': {
+                'precision': precision_pos_test,
+                'recall': recall_pos_test,
+            },
+            'NEG': {
+                'precision': precision_neg_test,
+                'recall': recall_neg_test,
+            }
+        }
+    }
+    
+
+
+# This function will be reporting errors due to variables which were not assigned any value.
+# Your task is to get it working! You can comment out things which aren't working at first.
+def main(argv):
+    data = pd.read_csv(argv[1])
+    model = my_naive_bayes(data, 'text','label')
+    
+    accuracy_test = model['TEST']['accuracy']
+    accuracy_train = model['TRAIN']['accuracy']
+    
+    precision_pos_test, recall_pos_test = model['TEST']['POS']['precision'],model['TEST']['POS']['recall'] 
+    precision_neg_test, recall_neg_test =  model['TEST']['NEG']['precision'],model['TEST']['NEG']['recall'] 
+
+    precision_pos_train, recall_pos_train =  model['TRAIN']['POS']['precision'],model['TRAIN']['POS']['recall'] 
+    precision_neg_train, recall_neg_train = model['TRAIN']['POS']['precision'],model['TRAIN']['POS']['recall'] 
 
     print("Train accuracy:           \t{}".format(round(accuracy_train, ROUND)))
     print("Train precision positive: \t{}".format(
@@ -130,7 +168,3 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv)
-
-
-def my_naive_bayes():
-    return None

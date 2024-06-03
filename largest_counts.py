@@ -21,8 +21,8 @@ def largest_counts(data):
     # TODO: Cut up the rows in the dataset according to how you stored things.
     # The below assumes your data has a column of "type", storing whether the review is pos or neg
     # If you did differently, make corresponding changes
-    pos_data = data[data['label']=='pos']
-    neg_data = data[data['label'] == 'neg']
+    pos_data = data[data['label']== 1]
+    neg_data = data[data['label'] == 0]
 
 
     data_cut = [pos_data, neg_data]
@@ -30,7 +30,7 @@ def largest_counts(data):
     # It is your task to Google and learn how to do this, but we will help of course,
     # if you come to use with questions. This can be daunting at first, but give it time.
     # Spend some (reasonable) time across a few days if necessary, and you will do it!
-    model = ["review", "cleaned_review", "no stopwords", "lemmatized"]
+    model = ["text", "cleaned_text", "no_stop", "lemmatized"]
 
     # Loop over the four portions of data, and loop over each model
     # Create a counting dictionary for each one
@@ -62,9 +62,11 @@ def largest_counts(data):
 
 def main(argv):
     data = pd.read_csv(argv[1], index_col=[0])
-    #print(data.head())  # <- Verify the format. Comment this back out once done.
-
-    largest_counts(data)
+    
+    train_data = data[data['type']=='train']
+    # print(train_data.head())  # <- Verify the format. Comment this back out once done.
+    
+    largest_counts(train_data)
 
 
 if __name__ == "__main__":
